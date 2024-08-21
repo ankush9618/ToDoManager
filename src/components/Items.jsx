@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { FaEdit } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
-import { useToDo } from '../context/useToDoContext';
+import { useToDo } from '../components/useToDoContext';
 import { FaSave } from "react-icons/fa";
 
 function ToDoItem({todo}) {
