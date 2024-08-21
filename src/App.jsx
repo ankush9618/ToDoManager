@@ -1,65 +1,50 @@
-import { useRef, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import Items from "./components/Items";
-import AddItems from "./components/AddItems";
+import { useEffect, useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
+import Input from './components/Input'
+import Header from './components/Header'
+import { ToDoProvider } from './context/useToDoContext'
+import ToDoItem from './components/ToDoItem'
 
 function App() {
-  const [data, setData] = useState([]);
+  const [todoItems,setTodoItems] = useState([])
+  const addItem = (data)=>{
+    setTodoItems((prev)=>[{id:Date.now(),todoData:data,completed:false},...prev])
+    console.log(todoItems)
+  }
+  const deleteItem = (id)=>{
+    setTodoItems((prev)=>prev.filter((todo)=>todo.id!==id))
+  }
+  const updateItem = (id,todo) =>{
+    setTodoItems((prev)=>prev.map((ele)=>ele.id===id?todo:ele));
 
-  const [val, setVal] = useState("");
+  }
+  const completedItem = (id) =>{
+    setTodoItems((prev)=>prev.map((todo)=>todo.id===id?{...todo,completed:!todo.completed}:todo))
+  }
 
-  const onAddHandler = () => {
-    // data=[...data,{name:"kumar",age:25}];
-    if (val === "") {
-      alert("Nothing To Add...");
-      return;
+  useEffect(()=>{
+    const todoItem = JSON.parse(localStorage.getItem("todos"));
+    if(todoItem && todoItem.length>0){
+      setTodoItems(todoItem)
     }
-    data.includes(val)
-      ? alert("Task Already Exits...")
-      : setData([val, ...data]);
-  };
-  const deleteClicked = (value) => {
-    let array = data.filter((item) => item !== value);
-    setData(array);
-  };
+  },[])
 
-  const onChangeHandler = (e) => {
-    setVal(e.target.value);
-  };
+  useEffect(()=>{
+    localStorage.setItem("todos",JSON.stringify(todoItems));
+  },[todoItems])
+
+
   return (
-    <>
-      <h1 className="container fw-bold text-center my-5">To DO Manager</h1>
-      <div className="container">
-        <AddItems
-          onAddHandler={onAddHandler}
-          onChangeHandler={onChangeHandler}
-        />
-      </div>
-      <h2 className="container text-center my-3 text-warning">
-        Your Tasks Goes Here...
-      </h2>
-      <div className="container">
-        {data.length === 0 ? (
-          <p className="container text-center bg-warning bg-opacity-25 p-2 rounded-2 fw-bold">
-            No Tasks Added...
-          </p>
-        ) : (
-          data.map((ele, idx) => {
-            return (
-              <Items
-                key={idx}
-                ele={ele}
-                deleteClicked={deleteClicked}
-                val={val}
-              />
-            );
-          })
-        )}
-      </div>
-    </>
-  );
+    <ToDoProvider value={{todoItems,addItem,deleteItem,updateItem,completedItem}}>
+    <Header/>
+    <Input/>
+    {
+      todoItems.map((todo)=><ToDoItem key={todo.id} todo={todo}/>)
+    }
+    </ToDoProvider>
+  )
 }
 
-export default App;
+export default App
