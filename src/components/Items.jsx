@@ -4,7 +4,7 @@ import { ImCross } from "react-icons/im";
 import { useToDo } from '../components/useToDoContext';
 import { FaSave } from "react-icons/fa";
 
-function ToDoItem({todo}) {
+function Items({todo}) {
     const [change,setChange] = useState(todo.todoData);
     const [isEditable,setIsEditable] = useState(false);
     const [checked,setChecked] = useState(todo.completed)
@@ -37,4 +37,4 @@ function ToDoItem({todo}) {
     )
 }
 
-export default ToDoItem
+export default Items
