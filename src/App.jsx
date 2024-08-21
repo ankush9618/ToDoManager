@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Input from './components/Input'
 import Header from './components/Header'
-import { ToDoProvider } from './context/useToDoContext'
+import { ToDoProvider } from './components/useToDoContext'
 import ToDoItem from './components/ToDoItem'
 
 function App() {
