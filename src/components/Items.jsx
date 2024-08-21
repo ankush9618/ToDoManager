@@ -1,28 +1,40 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from 'react'
+import { FaEdit } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
+import { useToDo } from '../context/useToDoContext';
+import { FaSave } from "react-icons/fa";
 
-function Items(props) {
-  const textRef = useRef();
-
-  const handleDeleteClick = () => {
-    const value = textRef.current.textContent;
-    props.deleteClicked(value);
-  };
-  return (
-    <div className="container d-flex justify-content-between rounded-2 bg-success-subtle py-1 my-2">
-      <div
-        className="col-md-11 col-sm-10 bg-success-subtle py-2 fw-bold"
-        ref={textRef}
-      >
-        {props.ele}
-      </div>
-      <button
-        className="col-md-1 col-sm-2 rounded-2 bg-danger text-white fw-bold px-1"
-        onClick={handleDeleteClick}
-      >
-        Delete
-      </button>
-    </div>
-  );
+function ToDoItem({todo}) {
+    const [change,setChange] = useState(todo.todoData);
+    const [isEditable,setIsEditable] = useState(false);
+    const [checked,setChecked] = useState(todo.completed)
+    const {updateItem,deleteItem,completedItem}=useToDo()
+    const val = useRef()
+    const clickHandler = ()=>{
+        setChecked(!checked)
+        completedItem(todo.id)
+    }
+    const deleteHandle = () =>{
+        deleteItem(todo.id)
+    }
+    const editHandler = () =>{
+        setIsEditable(!isEditable)
+        updateItem(todo.id,{...todo,todoData:change})
+    }
+    return (
+        <div className={`md:w-2/3 w-3/4 mx-auto ${checked?"bg-green-300":"bg-sky-100"} rounded-md border border-sky-600 my-2`}>
+            <div className='flex justify-between p-1'>
+                <div className='flex justify-start gap-4 pl-2'>
+                    <input type="checkbox"  className='bg-sky-100' defaultChecked={checked} onClick={clickHandler}/>
+                    <input type="text"  onChange={(e)=>setChange(e.target.value)} readOnly={!isEditable || checked} value={change} className={`bg-sky-100 w-10/12 ${checked?"bg-green-300 line-through":"bg-sky-100"}`}/>
+                </div>
+                <div className='flex justify-end gap-4 pr-2'>
+                    <button className='text-xl' onClick={editHandler}>{isEditable?<FaSave/>:<FaEdit />}</button>
+                    <button className='text-xl text-red-500' onClick={deleteHandle}><ImCross /></button>
+                </div>
+            </div>
+        </div>
+    )
 }
 
-export default Items;
+export default ToDoItem
